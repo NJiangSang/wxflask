@@ -9,9 +9,9 @@
 from flask import request
 from loguru import logger
 
-from wx.verification import signature as f_signature	# 签名算法
-import wx.receive as receive	# 接收微信消息的地形
-import wx.reply as reply		# 将要答复的信息包装成微信需要的xml格式
+from wx.verification import signature as f_signature  # 签名算法
+import wx.receive as receive  # 接收微信消息的地形
+import wx.reply as reply  # 将要答复的信息包装成微信需要的xml格式
 
 
 class WxHandle:
@@ -23,15 +23,15 @@ class WxHandle:
         :return:
         """
         try:
-            logger.info("接收微信消息->\n"+str(request.data))
+            logger.info("接收微信消息->\n" + str(request.data))
             # 对微信传来的xml信息进行解析，解析成我们自定义的对象信息
             receive_msg = receive.parse_xml(request.data)
             # 如果解析成功
             if isinstance(receive_msg, receive.Msg):
                 # 该微信信息为文本信息
                 if receive_msg.type == "text":
-                    # 创建一条文本信息准备返回给微信，文本内容为“测试”
-                    msg = reply.TextMsg(receive_msg, "测试")
+                    # 创建一条文本信息准备返回给微信，文本内容为“测试成功”
+                    msg = reply.TextMsg(receive_msg, "测试成功")
                     # 发送我创建的文本信息
                     return msg.send()
                 else:
@@ -49,9 +49,9 @@ class WxHandle:
         :return:
         """
         # 微信传来的签名，需要和我生成的签名进行比对
-        signature = request.args.get('signature')   # 微信已经加密好的签名，供我比对用
-        timestamp = request.args.get('timestamp')   # 这是我需要的加密信息
-        nonce = request.args.get('nonce')           # 也是需要的加密信息
+        signature = request.args.get('signature')  # 微信已经加密好的签名，供我比对用
+        timestamp = request.args.get('timestamp')  # 这是我需要的加密信息
+        nonce = request.args.get('nonce')  # 也是需要的加密信息
         # 判断该请求是否正常，签名是否匹配
         try:
             # 微信传来的签名与我加密的签名进行比对，成功则返回指定数据给微信
