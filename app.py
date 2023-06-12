@@ -27,7 +27,7 @@ def wx_listener():
 
 
 if __name__ == "__main__":
-    # 监听8800端口
+    # 监听8880端口
     app.run(host="0.0.0.0", port=8880)
 
 

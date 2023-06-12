@@ -6,6 +6,9 @@
 @Email   : xie672088678@163.com
 @Software: PyCharm
 """
+import json
+
+import requests
 from flask import request
 from loguru import logger
 
@@ -23,23 +26,37 @@ class WxHandle:
         :return:
         """
         try:
-            logger.info("接收微信消息->\n" + str(request.data))
+            # logger.info("接收微信消息->\n" + str(request.data))
             # 对微信传来的xml信息进行解析，解析成我们自定义的对象信息
             receive_msg = receive.parse_xml(request.data)
-            # 如果解析成功
-            if isinstance(receive_msg, receive.Msg):
-                # 该微信信息为文本信息
-                if receive_msg.type == "text":
-                    # 创建一条文本信息准备返回给微信，文本内容为“测试成功”
-                    msg = reply.TextMsg(receive_msg, "测试成功")
-                    # 发送我创建的文本信息
-                    return msg.send()
-                else:
-                    # 该信息不为文本信息时，发送我定义好的一条文本信息给他
-                    return reply.Msg(receive_msg).send()
+            json_data = receive_msg.get('content')
+            data = {"type": "ios_wx", "name": json_data}
+            # 使用json_data请求后台接口
+            headers = {"Content-Type": "application/x-www-form-urlencoded"}
+            response = requests.post(url="https://tool.cupmf.com/hero/detail.php", data=data, headers=headers)
+            # 构造回复消息
+            if response.status_code ==200:
+                return reply.Msg(receive_msg, json.loads(response.text).get('data')).send()
+            else:
+                logger.error("数据请求失败")
         except Exception:
-            logger.error("解析微信XML数据失败！")
-        return "xml解析出错"
+            logger.error("解析微信XML数据失败!")
+
+
+        #     # 如果解析成功
+        #     if isinstance(receive_msg, receive.Msg):
+        #         # 该微信信息为文本信息
+        #         if receive_msg.type == "text":
+        #             # 创建一条文本信息准备返回给微信，文本内容为“测试成功”
+        #             msg = reply.TextMsg(receive_msg, "测试成功")
+        #             # 发送我创建的文本信息
+        #             return msg.send()
+        #         else:
+        #             # 该信息不为文本信息时，发送我定义好的一条文本信息给他
+        #             return reply.Msg(receive_msg).send()
+        # except Exception:
+        #     logger.error("解析微信XML数据失败！")
+        # return "xml解析出错"
 
     @staticmethod
     def get():

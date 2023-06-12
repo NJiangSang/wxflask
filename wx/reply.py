@@ -6,25 +6,26 @@
 @Email   : xie672088678@163.com
 @Software: PyCharm
 """
+import json
 import time
 import wx.receive as receive
 
 
 class Msg:
-    def __init__(self, receive_msg: receive.Msg):
+    def __init__(self, receive_msg, response):
         """
         将回复用户的信息按照微信的xml格式进行包装
         :param receive_msg:
         """
         self.dict = dict()
         # 这里是我发送信息，所以发送给我们收到的微信消息的发送者
-        self.dict['ToUserName'] = receive_msg.fromUser
+        self.dict['ToUserName'] = receive_msg.get('fromuser')
         # 而是谁发送的呢？自然是我们收到的微信消息的接收者，也就是我的公众号
-        self.dict['FromUserName'] = receive_msg.toUser
+        self.dict['FromUserName'] = receive_msg.get('touser')
         # 发送时间
         self.dict['CreateTime'] = int(time.time())
         # 发送的信息文本，这里是默认的文本
-        self.dict['Content'] = "对不起，我没有看懂你的信息~"
+        self.dict['Content'] = response
         pass
 
     def send(self):
@@ -40,6 +41,15 @@ class Msg:
               """
         # 将当前对象的dict属性填入到xml文本中，对应的{ToUserName}、{FromUserName}等
         return xml.format(**self.dict)
+
+    def to_json(self):
+        return json.dumps({
+            'toUser': self.dict['ToUserName'],
+            'fromUser': self.dict['FromUserName'],
+            'createTime': self.dict['CreateTime'],
+            'msgType': 'text',
+            'content': self.dict['Content']
+        })
 
 
 class TextMsg(Msg):
@@ -58,6 +68,11 @@ class TextMsg(Msg):
             </xml>
             """
         return xml.format(**self.dict)
+
+    def to_json(self):
+        json_data = super().to_json()
+        json_data['content'] = self.dict['Content']
+        return json_data
 
 
 class ImageMsg(Msg):
@@ -78,3 +93,9 @@ class ImageMsg(Msg):
             </xml>
             """
         return xml.format(**self.dict)
+
+    def to_json(self):
+        json_data = super().to_json()
+        json_data['mediaId'] = self.dict['MediaId']
+        json_data['msgType'] = 'image'
+        return json_data
