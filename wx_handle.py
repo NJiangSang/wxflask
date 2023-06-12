@@ -29,6 +29,7 @@ class WxHandle:
             logger.info("接收微信消息->\n" + str(request.data))
             # 对微信传来的xml信息进行解析，解析成我们自定义的对象信息
             receive_msg = receive.parse_xml(request.data)
+            # print(receive_msg)
             json_data = receive_msg.get('content')
             data = {"type": "ios_wx", "name": json_data}
             # 使用json_data请求后台接口

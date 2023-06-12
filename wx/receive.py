@@ -6,6 +6,7 @@
 @Email   : xie672088678@163.com
 @Software: PyCharm
 """
+import codecs
 import json
 from lxml import etree  # 用来解析xml格式的数据的库
 import xml.etree.ElementTree as ET
@@ -19,13 +20,17 @@ def parse_xml(web_data):
     """
     # 解析xml数据
     xml = ET.fromstring(web_data)
+    content = xml.find('Content').text
+    decoded_content = content.encode('latin1').decode('unicode_escape').encode('latin1').decode('utf-8')
+
     msg = {}
     msg['touser'] = xml.find('ToUserName').text
     msg['fromuser'] = xml.find('FromUserName').text
     msg['create_time'] = xml.find('CreateTime').text
     msg['msgtype'] = xml.find('MsgType').text
-    msg['content'] = xml.find('Content').text.encode('utf-8').decode('unicode_escape')
+    msg['content'] = decoded_content
     msg['msgid'] = xml.find('MsgId').text
+
     return msg
 
 
