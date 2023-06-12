@@ -21,8 +21,9 @@ def parse_xml(web_data):
     # 解析xml数据
     xml = ET.fromstring(web_data)
     content = xml.find('Content').text
+    content = content.replace('\\\\xb5', '\\xb5')
+    content = content.replace('\\\\x', '\\x')
     decoded_content = content.encode('latin1').decode('unicode_escape').encode('latin1').decode('utf-8')
-
     msg = {}
     msg['touser'] = xml.find('ToUserName').text
     msg['fromuser'] = xml.find('FromUserName').text
