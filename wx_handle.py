@@ -26,7 +26,7 @@ class WxHandle:
         :return:
         """
         try:
-            # logger.info("接收微信消息->\n" + str(request.data))
+            logger.info("接收微信消息->\n" + str(request.data))
             # 对微信传来的xml信息进行解析，解析成我们自定义的对象信息
             receive_msg = receive.parse_xml(request.data)
             json_data = receive_msg.get('content')
