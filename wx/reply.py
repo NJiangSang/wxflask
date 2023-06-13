@@ -53,10 +53,6 @@ class Msg:
 
 
 class TextMsg(Msg):
-    def __init__(self, receive_msg: receive.Msg, content):
-        super().__init__(receive_msg)
-        self.dict['Content'] = content
-
     def send(self):
         xml = """
             <xml>
