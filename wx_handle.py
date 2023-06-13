@@ -37,7 +37,7 @@ class WxHandle:
             response = requests.post(url="https://tool.cupmf.com/hero/detail.php", data=data, headers=headers)
             # 构造回复消息
             if response.status_code ==200:
-                return reply.Msg(receive_msg, json.loads(response.text).get('data')).send()
+                return reply.TextMsg(receive_msg, json.loads(response.text).get('data')).send()
             else:
                 logger.error("数据请求失败")
         except Exception:
@@ -58,6 +58,7 @@ class WxHandle:
         # except Exception:
         #     logger.error("解析微信XML数据失败！")
         # return "xml解析出错"
+
 
     @staticmethod
     def get():

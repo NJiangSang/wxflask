@@ -6,9 +6,7 @@
 @Email   : xie672088678@163.com
 @Software: PyCharm
 """
-import codecs
 import json
-from lxml import etree  # 用来解析xml格式的数据的库
 import xml.etree.ElementTree as ET
 
 

@@ -12,7 +12,7 @@ import wx.receive as receive
 
 
 class Msg:
-    def __init__(self, receive_msg, response):
+    def __init__(self, receive_msg, content):
         """
         将回复用户的信息按照微信的xml格式进行包装
         :param receive_msg:
@@ -25,7 +25,7 @@ class Msg:
         # 发送时间
         self.dict['CreateTime'] = int(time.time())
         # 发送的信息文本，这里是默认的文本
-        self.dict['Content'] = response
+        self.dict['Content'] = content
         pass
 
     def send(self):
